@@ -8,6 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server extends JFrame implements Runnable {
+    int x=74;
     ServerSocket serverSocket;
     JTabbedPane tabbedPane=null;
     public Server() {
