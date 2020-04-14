@@ -20,7 +20,7 @@ public class DisplayPane  {
     JLabel state;//显示当前连接状态
     JPanel panel;
     public DisplayPane(Handler handler) throws HeadlessException {
-
+        int x=30;
         this.handler=handler;
         clinet=new JLabel();
         clinet.setPreferredSize(new Dimension(250,30));
