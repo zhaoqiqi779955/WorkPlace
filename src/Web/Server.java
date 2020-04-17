@@ -6,15 +6,16 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server extends JFrame implements Runnable {
-    int x=74;
     ServerSocket serverSocket;
-    JTabbedPane tabbedPane=null;
+    JTabbedPane tabbedPane = null;
     public Server() {
-       super.setTitle("服务器");
-       setSize(600,600);
-        tabbedPane=new JTabbedPane(JTabbedPane.LEFT);
+        super.setTitle("服务器");
+        setSize(600, 600);
+        tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
         add(tabbedPane, BorderLayout.CENTER);
         setVisible(true);
         setLocationRelativeTo(null);
@@ -34,11 +35,14 @@ public class Server extends JFrame implements Runnable {
     }
 
     public void run() {
+
+        ExecutorService pool= Executors.newFixedThreadPool(100);
+
         while (true) {
             try {
                 Socket socketAtServer = serverSocket.accept();
                 System.out.println("已与" + socketAtServer.getInetAddress() + " 端口号：" + socketAtServer.getPort() + "连接！");
-                tabbedPane.add("客户："+socketAtServer.getInetAddress() + " 端口号：" + socketAtServer.getPort(),new Handler(socketAtServer).getPane());
+                tabbedPane.add("客户：" + socketAtServer.getInetAddress() + " 端口号：" + socketAtServer.getPort(), new Handler(socketAtServer).getPane());
                 setVisible(true);
             } catch (Exception e) {
                 System.out.println(e);
@@ -50,17 +54,18 @@ public class Server extends JFrame implements Runnable {
     }
 }
 
-class Handler {//用于处理每一个客户端请求
+class Handler implements Runnable{//用于处理每一个客户端请求
     DisplayPane displayPane = null;
     Socket socket = null;
     BufferedWriter writer = null;
     BufferedReader reader = null;
+
     public Handler(Socket soc) {
         socket = soc;
         displayPane = new DisplayPane(this);
-        InetAddress inetAddress=soc.getInetAddress();
+        InetAddress inetAddress = soc.getInetAddress();
 
-        displayPane.setClinet("与客户: "+inetAddress.getHostAddress()+" 端口号: "+socket.getPort());
+        displayPane.setClinet("与客户: " + inetAddress.getHostAddress() + " 端口号: " + socket.getPort());
         displayPane.setState(true);
         try {
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -81,7 +86,7 @@ class Handler {//用于处理每一个客户端请求
                     while (true) {
                         String str = reader.readLine();
                         if (str != null)
-                            displayPane.ShowMessage("客户端："+str);
+                            displayPane.ShowMessage("客户端：" + str);
                         try {
                             sleep(500);
                         } catch (InterruptedException e) {
@@ -111,5 +116,10 @@ class Handler {//用于处理每一个客户端请求
 
     public JPanel getPane() {
         return displayPane.getPane();
+    }
+
+    @Override
+    public void run() {
+
     }
 }
