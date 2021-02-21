@@ -1,18 +1,15 @@
-package testForInet;
+package Web.testForInet;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class TestInet {
+public class InquireHost {
     public static void main(String[] args) {
         try {
-            InetAddress[] host=InetAddress.getAllByName("www.baidu.com");
-           for(InetAddress h:host) {
-               System.out.println(h);
-           }
+            InetAddress host=InetAddress.getByName(args[0]);
+            System.out.println(host);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
-
     }
 }
